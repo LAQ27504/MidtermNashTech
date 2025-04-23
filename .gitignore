@@ -1,0 +1,75 @@
+# ===========================
+# Global / root ignores
+# ===========================
+# OS files
+.DS_Store
+Thumbs.db
+
+# ===========================
+# .NET / Backend (C#)
+# ===========================
+# Build directories
+[Bb]in/
+[Oo]bj/
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+# IDEs and editors
+.vs/
+.idea/
+*.userprefs
+# NuGet
+*.nupkg
+# Logs and publish outputs
+*.log
+*.azurePubxml
+*.publish.xml
+
+# ===========================
+# React / Frontend (Node)
+# ===========================
+# Dependency directories
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Build outputs
+build/
+dist/
+# CRA environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# Editors and IDEs
+.vscode/
+# Misc
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
