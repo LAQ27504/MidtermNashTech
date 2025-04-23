@@ -32,6 +32,10 @@ Thumbs.db
 # React / Frontend (Node)
 # ===========================
 # Dependency directories
+node_modules
+dist
+dist-ssr
+*.local
 
 # Logs
 logs
@@ -42,16 +46,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
@@ -60,16 +58,9 @@ dist-ssr
 
 # Build outputs
 build/
-dist/
 # CRA environment files
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-# Editors and IDEs
-.vscode/
-# Misc
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
