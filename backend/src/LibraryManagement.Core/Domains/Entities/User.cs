@@ -10,6 +10,8 @@ namespace LibraryManagement.Core.Domains.Entities
 
         public string HashedPassword { get; set; }
 
-        public ICollection<BookBorrowingRequest> BookBorrowingRequests { get; set; }
+        public ICollection<BookBorrowingRequest> BorrowingRequests { get; set; }
+
+        public ICollection<BookBorrowingRequest> RequestsToApprove { get; set; }
     }
 }

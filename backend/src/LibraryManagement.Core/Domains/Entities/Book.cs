@@ -8,6 +8,10 @@ namespace LibraryManagement.Core.Domains.Entities
 
         public int CategoryId { get; set; }
 
+        public int Amount { get; set; }
+
         public Category BookCategory { get; set; }
+
+        public ICollection<BookBorrowingRequestDetails> RequestDetails { get; set; }
     }
 }

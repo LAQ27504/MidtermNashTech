@@ -6,8 +6,6 @@ namespace LibraryManagement.Core.Domains.Entities
 
         public ICollection<Book> BorrowedBooks { get; set; }
 
-        public int BookBorrowingRequestId { get; set; }
-
         public BookBorrowingRequest BookBorrowingRequest { get; set; }
     }
 }

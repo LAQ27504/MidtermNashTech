@@ -13,5 +13,17 @@ namespace LibraryManagement.API.Infrastructure.Persistence.DBContext
 
             base.OnModelCreating(modelBuilder);
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(
+                    "Server=localhost;Database=LibraryDb;User Id=sa;Password=SQLServer1@;TrustServerCertificate=True;"
+                );
+
+                Console.WriteLine("Connection successfully");
+            }
+        }
     }
 }
