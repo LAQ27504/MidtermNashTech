@@ -1,3 +1,4 @@
+using LibraryManagement.Core.Domains.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.API.Infrastructure.Persistence.DBContext
@@ -6,6 +7,16 @@ namespace LibraryManagement.API.Infrastructure.Persistence.DBContext
     {
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
             : base(options) { }
+
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<Book> Books { get; set; }
+
+        public DbSet<Category> Categories { get; set; }
+
+        public DbSet<BookBorrowingRequest> BookBorrowingRequests { get; set; }
+
+        public DbSet<BookBorrowingRequestDetails> BooksBorrowingRequestDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

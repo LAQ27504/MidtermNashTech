@@ -2,10 +2,14 @@ namespace LibraryManagement.Core.Domains.Entities
 {
     public class BookBorrowingRequestDetails
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
-        public ICollection<Book> BorrowedBooks { get; set; }
+        public Guid BookId { get; set; }
 
-        public BookBorrowingRequest BookBorrowingRequest { get; set; }
+        public required Book BorrowBook { get; set; }
+
+        public Guid RequestId { get; set; }
+
+        public required BookBorrowingRequest BookBorrowingRequest { get; set; }
     }
 }

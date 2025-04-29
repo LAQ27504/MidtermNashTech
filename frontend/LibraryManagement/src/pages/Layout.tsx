@@ -5,11 +5,13 @@ import { Outlet } from "react-router-dom";
 export default function Layout() {
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <main>
-        <SidebarTrigger />
-        <Outlet />
-      </main>
+      <div className="flex min-h-screen">
+        <AppSidebar />
+        <main className="flex-1 p-4 overflow-auto">
+          <SidebarTrigger />
+          <Outlet />
+        </main>
+      </div>
     </SidebarProvider>
   );
 }
