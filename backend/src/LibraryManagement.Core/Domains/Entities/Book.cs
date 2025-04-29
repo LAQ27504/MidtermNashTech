@@ -6,12 +6,12 @@ namespace LibraryManagement.Core.Domains.Entities
 
         public required string Name { get; set; }
 
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
 
         public int Amount { get; set; }
 
-        public required Category BookCategory { get; set; }
+        public Category BookCategory { get; set; }
 
-        public required ICollection<BookBorrowingRequestDetails> RequestDetails { get; set; }
+        public ICollection<BookBorrowingRequestDetails> RequestDetails { get; set; }
     }
 }

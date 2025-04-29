@@ -6,6 +6,6 @@ namespace LibraryManagement.Core.Domains.Entities
 
         public required string Name { get; set; }
 
-        public required ICollection<Book> Books { get; set; }
+        public ICollection<Book> Books { get; set; }
     }
 }

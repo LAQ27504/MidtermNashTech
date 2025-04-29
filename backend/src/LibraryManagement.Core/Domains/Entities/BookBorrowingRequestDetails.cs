@@ -6,10 +6,10 @@ namespace LibraryManagement.Core.Domains.Entities
 
         public Guid BookId { get; set; }
 
-        public required Book BorrowBook { get; set; }
+        public Book BorrowBook { get; set; }
 
         public Guid RequestId { get; set; }
 
-        public required BookBorrowingRequest BookBorrowingRequest { get; set; }
+        public BookBorrowingRequest BookBorrowingRequest { get; set; }
     }
 }
