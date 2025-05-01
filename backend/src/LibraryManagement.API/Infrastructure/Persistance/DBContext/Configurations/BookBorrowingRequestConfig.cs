@@ -1,3 +1,4 @@
+using LibraryManagement.API.Infrastructure.Persistence.Seed;
 using LibraryManagement.Core.Domains.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -27,7 +28,7 @@ namespace LibraryManagement.API.Infrastructure.Persistence.DBContext.Configurati
                 .OnDelete(DeleteBehavior.Restrict);
             if (!builder.Metadata.GetSeedData().Any())
             {
-                builder.HasData();
+                builder.HasData(BookBorrowingRequestSeeding.SeedBookRequests());
             }
         }
     }

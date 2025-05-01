@@ -1,3 +1,4 @@
+using LibraryManagement.API.Infrastructure.Persistance.Seed;
 using LibraryManagement.Core.Domains.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -14,21 +15,8 @@ namespace LibraryManagement.API.Infrastructure.Persistence.DBContext
 
             if (!builder.Metadata.GetSeedData().Any())
             {
-                builder.HasData();
+                builder.HasData(CategorySeeding.SeedCategories());
             }
-
-            builder.HasData(
-                new Category
-                {
-                    Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    Name = "Computer Science",
-                },
-                new Category
-                {
-                    Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                    Name = "Literature",
-                }
-            );
         }
     }
 }

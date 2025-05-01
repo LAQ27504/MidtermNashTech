@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagement.API.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250429020522_InitialCreate")]
+    [Migration("20250501083633_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -120,7 +120,7 @@ namespace LibraryManagement.API.Migrations
 
                     b.HasIndex("RequestId");
 
-                    b.ToTable("BooksBorrowingRequestDetails");
+                    b.ToTable("BookBorrowingRequestDetails");
 
                     b.HasData(
                         new
@@ -144,7 +144,7 @@ namespace LibraryManagement.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category");
 
                     b.HasData(
                         new
@@ -188,17 +188,17 @@ namespace LibraryManagement.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("55555555-5555-5555-5555-555555555555"),
-                            HashedPassword = "hashed_password_1",
-                            Name = "John Doe",
-                            Type = 1
+                            Id = new Guid("66666666-6666-6666-6666-666666666666"),
+                            HashedPassword = "AQAAAAIAAYagAAAAEM3vFmVZJZignzTZ1/YAJVrQq7z8JrYDaOM6UloWpvrR8P7yZurcGHOviB8AFHfjcg==",
+                            Name = "admin",
+                            Type = 0
                         },
                         new
                         {
-                            Id = new Guid("66666666-6666-6666-6666-666666666666"),
-                            HashedPassword = "hashed_password_2",
-                            Name = "Jane Smith",
-                            Type = 0
+                            Id = new Guid("55555555-5555-5555-5555-555555555555"),
+                            HashedPassword = "AQAAAAIAAYagAAAAEDbhXkTJQszxFIhuKpJ/JgG19VF7hv3WC+0EoeLJkRXOTCQ3OrQP3OQudBkNko5BhQ==",
+                            Name = "user1",
+                            Type = 1
                         });
                 });
 

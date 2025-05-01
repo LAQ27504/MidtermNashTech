@@ -14,7 +14,7 @@ namespace LibraryManagement.API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Categories",
+                name: "Category",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -22,7 +22,7 @@ namespace LibraryManagement.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.PrimaryKey("PK_Category", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,9 +52,9 @@ namespace LibraryManagement.API.Migrations
                 {
                     table.PrimaryKey("PK_Books", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Books_Categories_CategoryId",
+                        name: "FK_Books_Category_CategoryId",
                         column: x => x.CategoryId,
-                        principalTable: "Categories",
+                        principalTable: "Category",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -87,7 +87,7 @@ namespace LibraryManagement.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BooksBorrowingRequestDetails",
+                name: "BookBorrowingRequestDetails",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -96,15 +96,15 @@ namespace LibraryManagement.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BooksBorrowingRequestDetails", x => x.Id);
+                    table.PrimaryKey("PK_BookBorrowingRequestDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BooksBorrowingRequestDetails_BookBorrowingRequests_RequestId",
+                        name: "FK_BookBorrowingRequestDetails_BookBorrowingRequests_RequestId",
                         column: x => x.RequestId,
                         principalTable: "BookBorrowingRequests",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BooksBorrowingRequestDetails_Books_BookId",
+                        name: "FK_BookBorrowingRequestDetails_Books_BookId",
                         column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
@@ -112,7 +112,7 @@ namespace LibraryManagement.API.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Categories",
+                table: "Category",
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
@@ -125,8 +125,8 @@ namespace LibraryManagement.API.Migrations
                 columns: new[] { "Id", "HashedPassword", "Name", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("55555555-5555-5555-5555-555555555555"), "hashed_password_1", "John Doe", 1 },
-                    { new Guid("66666666-6666-6666-6666-666666666666"), "hashed_password_2", "Jane Smith", 0 }
+                    { new Guid("55555555-5555-5555-5555-555555555555"), "AQAAAAIAAYagAAAAEDbhXkTJQszxFIhuKpJ/JgG19VF7hv3WC+0EoeLJkRXOTCQ3OrQP3OQudBkNko5BhQ==", "user1", 1 },
+                    { new Guid("66666666-6666-6666-6666-666666666666"), "AQAAAAIAAYagAAAAEM3vFmVZJZignzTZ1/YAJVrQq7z8JrYDaOM6UloWpvrR8P7yZurcGHOviB8AFHfjcg==", "admin", 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -144,9 +144,19 @@ namespace LibraryManagement.API.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "BooksBorrowingRequestDetails",
+                table: "BookBorrowingRequestDetails",
                 columns: new[] { "Id", "BookId", "RequestId" },
                 values: new object[] { new Guid("88888888-8888-8888-8888-888888888888"), new Guid("33333333-3333-3333-3333-333333333333"), new Guid("77777777-7777-7777-7777-777777777777") });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookBorrowingRequestDetails_BookId",
+                table: "BookBorrowingRequestDetails",
+                column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookBorrowingRequestDetails_RequestId",
+                table: "BookBorrowingRequestDetails",
+                column: "RequestId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BookBorrowingRequests_ApproverId",
@@ -164,16 +174,6 @@ namespace LibraryManagement.API.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BooksBorrowingRequestDetails_BookId",
-                table: "BooksBorrowingRequestDetails",
-                column: "BookId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BooksBorrowingRequestDetails_RequestId",
-                table: "BooksBorrowingRequestDetails",
-                column: "RequestId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Users_Name",
                 table: "Users",
                 column: "Name",
@@ -184,7 +184,7 @@ namespace LibraryManagement.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BooksBorrowingRequestDetails");
+                name: "BookBorrowingRequestDetails");
 
             migrationBuilder.DropTable(
                 name: "BookBorrowingRequests");
@@ -196,7 +196,7 @@ namespace LibraryManagement.API.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Category");
         }
     }
 }

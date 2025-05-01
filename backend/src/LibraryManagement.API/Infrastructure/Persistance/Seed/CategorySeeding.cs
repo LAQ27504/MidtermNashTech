@@ -1,23 +1,27 @@
-using LibraryManagement.Core.Application.Service.Security;
 using LibraryManagement.Core.Domains.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace LibraryManagement.API.Infrastructure.Persistence.Seed
+namespace LibraryManagement.API.Infrastructure.Persistance.Seed
 {
     public static class CategorySeeding
     {
-        public static List<Category> SeedCategory()
+        public static List<Category> SeedCategories()
         {
-            var bookRequestDetails = new List<Category>
+            var categories = new List<Category>
             {
                 new Category
                 {
-                    Id = Guid.Parse("88888888-8888-8888-8888-888888888888"),
-                    BookId = Guid.Parse("33333333-3333-3333-3333-333333333333"), // Book: "Introduction to Algorithms"
-                    RequestId = Guid.Parse("77777777-7777-7777-7777-777777777777"), // Request: BorrowingRequest
+                    Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                    Name = "Computer Science",
+                },
+                new Category
+                {
+                    Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                    Name = "Literature",
                 },
             };
 
-            return bookRequestDetails;
+            return categories;
         }
     }
 }
