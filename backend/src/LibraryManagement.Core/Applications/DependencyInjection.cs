@@ -12,10 +12,9 @@ namespace LibraryManagement.Core.Application
         public static IServiceCollection AddApplication(
             this IServiceCollection services,
             IConfiguration configuration
-        ) // ← add this parameter
+        )
         {
-            // read settings
-            var jwtSection = configuration.GetSection("JwtSettings");
+            var jwtSection = configuration.GetSection("JwtConfig");
             var key = Encoding.UTF8.GetBytes(jwtSection["Key"]!);
             var issuer = jwtSection["Issuer"]!;
             var audience = jwtSection["Audience"]!;

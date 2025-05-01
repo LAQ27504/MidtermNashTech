@@ -16,7 +16,7 @@ namespace LibraryManagement.API.Infrastructure.Persistence.DBContext
 
         public DbSet<BookBorrowingRequest> BookBorrowingRequests { get; set; }
 
-        public DbSet<BookBorrowingRequestDetails> BooksBorrowingRequestDetails { get; set; }
+        public DbSet<Category> BooksBorrowingRequestDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -12,6 +12,11 @@ namespace LibraryManagement.API.Infrastructure.Persistence.DBContext
 
             builder.Property(c => c.Name).IsRequired().HasMaxLength(100);
 
+            if (!builder.Metadata.GetSeedData().Any())
+            {
+                builder.HasData();
+            }
+
             builder.HasData(
                 new Category
                 {

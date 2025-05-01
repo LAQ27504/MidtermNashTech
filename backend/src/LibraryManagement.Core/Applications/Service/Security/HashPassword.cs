@@ -1,7 +1,7 @@
 using LibraryManagement.Core.Domains.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace LibraryManagement.Core.Application.Security
+namespace LibraryManagement.Core.Application.Service.Security
 {
     public static class PasswordService
     {

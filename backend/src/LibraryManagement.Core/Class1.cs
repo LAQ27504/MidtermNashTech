@@ -1,4 +1,4 @@
-﻿using LibraryManagement.Core.Application.Security;
+﻿using LibraryManagement.Core.Application.Service.Security;
 using LibraryManagement.Core.Domains.Entities;
 using Microsoft.Extensions.ObjectPool;
 
