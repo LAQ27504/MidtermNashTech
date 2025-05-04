@@ -1,17 +1,61 @@
+using LibraryManagement.API.Infrastructure.Persistance;
 using LibraryManagement.API.Infrastructure.Persistence.DBContext;
-using LibraryManagement.Core;
 using LibraryManagement.Core.Application;
+using LibraryManagement.Core.Application.Interface.Gateways;
+using LibraryManagement.Core.Application.Interface.Services;
+using LibraryManagement.Core.Application.Service;
+using LibraryManagement.Core.Application.Service.Security;
+using LibraryManagement.Core.Domains.Services;
+using LibraryManagement.Core.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication(builder.Configuration);
-builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUserRepo, UserRepo>();
+builder.Services.AddScoped<IBookBorrowingRequestRepo, BookBorrowingRequestRepo>();
+builder.Services.AddScoped<IBookBorrowingRequestDetailsRepo, BookBorrowingRequestDetailsRepo>();
+builder.Services.AddScoped<IBookRepo, BookRepo>();
+builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IBookBorrowingRequestService, BookBorrowingRequestService>();
+
+builder.Services.AddScoped<JwtService>();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    var jwtSecurityScheme = new OpenApiSecurityScheme
+    {
+        BearerFormat = "Jwt",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+        Description = "JWT Authorization header using the Bearer scheme.",
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = JwtBearerDefaults.AuthenticationScheme,
+        },
+    };
+
+    options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
+    options.AddSecurityRequirement(
+        new OpenApiSecurityRequirement { { jwtSecurityScheme, Array.Empty<string>() } }
+    );
+});
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
@@ -31,8 +75,3 @@ app.UseAuthorization();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

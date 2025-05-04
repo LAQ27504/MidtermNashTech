@@ -25,6 +25,7 @@ namespace LibraryManagement.API.Infrastructure.Persistence.DBContext.Configurati
                 .HasOne(r => r.Approver)
                 .WithMany(u => u.RequestsToApprove)
                 .HasForeignKey(r => r.ApproverId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
             if (!builder.Metadata.GetSeedData().Any())
             {

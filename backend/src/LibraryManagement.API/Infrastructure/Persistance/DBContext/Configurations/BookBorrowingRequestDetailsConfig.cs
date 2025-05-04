@@ -12,6 +12,8 @@ namespace LibraryManagement.API.Infrastructure.Persistence.DBContext.Configurati
         {
             builder.HasKey(d => d.Id);
 
+            builder.Property(d => d.Status).IsRequired();
+
             builder
                 .HasOne(d => d.BorrowBook)
                 .WithMany(b => b.RequestDetails)

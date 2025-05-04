@@ -31,6 +31,14 @@ namespace LibraryManagement.API.Migrations
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("AvailableAmount")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
@@ -50,6 +58,8 @@ namespace LibraryManagement.API.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
                             Amount = 10,
+                            Author = "Thomas H. Cormen",
+                            AvailableAmount = 10,
                             CategoryId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Name = "Introduction to Algorithms"
                         },
@@ -57,6 +67,8 @@ namespace LibraryManagement.API.Migrations
                         {
                             Id = new Guid("44444444-4444-4444-4444-444444444444"),
                             Amount = 5,
+                            Author = "William Shakespeare",
+                            AvailableAmount = 5,
                             CategoryId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Name = "Hamlet"
                         });
@@ -68,7 +80,7 @@ namespace LibraryManagement.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ApproverId")
+                    b.Property<Guid?>("ApproverId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateRequested")
@@ -111,20 +123,24 @@ namespace LibraryManagement.API.Migrations
                     b.Property<Guid>("RequestId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
 
                     b.HasIndex("RequestId");
 
-                    b.ToTable("BookBorrowingRequestDetails");
+                    b.ToTable("BooksBorrowingRequestDetails");
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("88888888-8888-8888-8888-888888888888"),
                             BookId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            RequestId = new Guid("77777777-7777-7777-7777-777777777777")
+                            RequestId = new Guid("77777777-7777-7777-7777-777777777777"),
+                            Status = 0
                         });
                 });
 
@@ -139,20 +155,25 @@ namespace LibraryManagement.API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<Guid>("RequestId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Name = "Computer Science"
+                            Name = "Computer Science",
+                            RequestId = new Guid("00000000-0000-0000-0000-000000000000")
                         },
                         new
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            Name = "Literature"
+                            Name = "Literature",
+                            RequestId = new Guid("00000000-0000-0000-0000-000000000000")
                         });
                 });
 
@@ -186,14 +207,14 @@ namespace LibraryManagement.API.Migrations
                         new
                         {
                             Id = new Guid("66666666-6666-6666-6666-666666666666"),
-                            HashedPassword = "AQAAAAIAAYagAAAAEM3vFmVZJZignzTZ1/YAJVrQq7z8JrYDaOM6UloWpvrR8P7yZurcGHOviB8AFHfjcg==",
+                            HashedPassword = "AQAAAAIAAYagAAAAEAg2UVJvckEN17dJ/XTKbyZ1PN4WztOILNpIaKazpKRNF4cKSwVICPeEC2cjqmCZzQ==",
                             Name = "admin",
                             Type = 0
                         },
                         new
                         {
                             Id = new Guid("55555555-5555-5555-5555-555555555555"),
-                            HashedPassword = "AQAAAAIAAYagAAAAEDbhXkTJQszxFIhuKpJ/JgG19VF7hv3WC+0EoeLJkRXOTCQ3OrQP3OQudBkNko5BhQ==",
+                            HashedPassword = "AQAAAAIAAYagAAAAEAi9eyvQXQpuDbJlSCHOViI8+lWqWw1TijYv+0SEHpQ6vyetdBgjTu9ETXm2pMlTHw==",
                             Name = "user1",
                             Type = 1
                         });
@@ -215,8 +236,7 @@ namespace LibraryManagement.API.Migrations
                     b.HasOne("LibraryManagement.Core.Domains.Entities.User", "Approver")
                         .WithMany("RequestsToApprove")
                         .HasForeignKey("ApproverId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("LibraryManagement.Core.Domains.Entities.User", "Requestor")
                         .WithMany("BorrowingRequests")

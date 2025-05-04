@@ -15,6 +15,10 @@ namespace LibraryManagement.API.Infrastructure.Persistence.DBContext
 
             builder.Property(b => b.Amount).IsRequired();
 
+            builder.Property(b => b.AvailableAmount).IsRequired();
+
+            builder.Property(b => b.Author).IsRequired().HasMaxLength(100);
+
             builder
                 .HasOne(b => b.BookCategory)
                 .WithMany(c => c.Books)

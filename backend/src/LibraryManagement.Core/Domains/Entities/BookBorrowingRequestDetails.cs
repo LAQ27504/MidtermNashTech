@@ -10,6 +10,8 @@ namespace LibraryManagement.Core.Domains.Entities
 
         public Guid RequestId { get; set; }
 
+        public BorrowBookStatus Status { get; set; }
+
         public BookBorrowingRequest BookBorrowingRequest { get; set; }
     }
 }

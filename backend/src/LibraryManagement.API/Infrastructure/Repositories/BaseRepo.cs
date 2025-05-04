@@ -18,35 +18,59 @@ namespace LibraryManagement.API.Infrastructure.Repositories
             _dbSet = _context.Set<TEntity>();
         }
 
-        public async Task<TEntity> AddAsync(TEntity obj)
+        public async Task AddAsync(TEntity obj)
         {
             var result = await _dbSet.AddAsync(obj);
-            await _context.SaveChangesAsync();
-
             //Checking what is result return ?
             Console.WriteLine(result);
-
-            return result.Entity;
         }
 
-        public Task<bool> DeleteAsync(TEntity entity)
+        public void Delete(TEntity entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Remove(entity);
         }
 
-        public Task<ICollection<TEntity>> GetAllAsync()
+        public async Task<bool> DeleteById(Guid id)
         {
-            throw new NotImplementedException();
+            var obj = await _dbSet.FindAsync(id);
+
+            if (obj == null)
+            {
+                return false;
+            }
+
+            _dbSet.Remove(obj);
+
+            return true;
         }
 
-        public Task<TEntity?> GetByIdAsync(Guid id)
+        public async Task<ICollection<TEntity>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _dbSet.ToListAsync();
         }
 
-        public Task<TEntity?> UpdateAsync(TEntity entity)
+        public async Task<TEntity?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var obj = await _dbSet.FindAsync(id);
+
+            return obj;
+        }
+
+        public void Update(TEntity entity)
+        {
+            _dbSet.Update(entity);
+        }
+
+        public async Task<(ICollection<TEntity>, int)> GetPagedAsync(int pageNumber, int pageSize)
+        {
+            var totalRecords = await _dbSet.CountAsync();
+            var obj = await _dbSet.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            return (obj, totalRecords);
+        }
+
+        public async Task AddRangeAsync(ICollection<TEntity> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
         }
     }
 }

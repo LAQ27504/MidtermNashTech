@@ -12,7 +12,7 @@ namespace LibraryManagement.Core.Domains.Entities
 
         public User Requestor { get; set; }
 
-        public Guid ApproverId { get; set; }
+        public Guid? ApproverId { get; set; }
 
         public User? Approver { get; set; }
 
