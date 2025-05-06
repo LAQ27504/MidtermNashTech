@@ -123,5 +123,98 @@ namespace LibraryManagement.Core.Infrastructure.Repositories
                 })
                 .ToListAsync();
         }
+
+        public async Task<(ICollection<BorrowResponse>, int)> GetPaginateWithRequestorID(
+            Guid requestorId,
+            int pageNumber,
+            int pageSize
+        )
+        {
+            // 1) Query the requests with details and book navigations
+            var query = _context
+                .BookBorrowingRequests.AsNoTracking()
+                .Where(r => r.RequestorId == requestorId)
+                .Include(r => r.BookBorrowingRequestDetails)
+                .ThenInclude(d => d.BorrowBook)
+                .OrderByDescending(r => r.DateRequested);
+
+            // 2) Project into your DTO
+            var res = await query
+                .Select(r => new BorrowResponse
+                {
+                    Id = r.Id,
+                    RequestorID = r.RequestorId.ToString(),
+                    RequestorName = r.Requestor.Name, // make sure you Include Requestor or load it separately
+                    BorrowDate = r.DateRequested,
+                    ApproverID = r.ApproverId.HasValue
+                        ? r.ApproverId.Value.ToString()
+                        : string.Empty,
+                    ApproverName = r.Approver!.Name ?? string.Empty,
+                    Status = r.Status,
+                    Details = r
+                        .BookBorrowingRequestDetails.Select(
+                            d => new BookBorrowingRequestDetailsResponse
+                            {
+                                Id = d.Id,
+                                BookId = d.BookId,
+                                BookName = d.BorrowBook.Name,
+                                BookAuthor = d.BorrowBook.Author,
+                                Status = d.Status,
+                            }
+                        )
+                        .ToList(),
+                })
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            // 3) Get the total count of records
+            var totalCount = await query.CountAsync();
+            return (res, totalCount);
+        }
+
+        public async Task<(ICollection<BorrowResponse>, int)> GetPaginateWaitingRequest(
+            int pageNumber,
+            int pageSize
+        )
+        {
+            var query = _context
+                .BookBorrowingRequests.AsNoTracking()
+                .Where(r => r.Status == RequestStatus.Waiting)
+                .Include(r => r.BookBorrowingRequestDetails)
+                .ThenInclude(d => d.BorrowBook)
+                .OrderByDescending(r => r.DateRequested);
+            var res = await query
+                .Select(r => new BorrowResponse
+                {
+                    Id = r.Id,
+                    RequestorID = r.RequestorId.ToString(),
+                    RequestorName = r.Requestor.Name, // make sure you Include Requestor or load it separately
+                    BorrowDate = r.DateRequested,
+                    ApproverID = r.ApproverId.HasValue
+                        ? r.ApproverId.Value.ToString()
+                        : string.Empty,
+                    ApproverName = r.Approver!.Name ?? string.Empty,
+                    Status = r.Status,
+                    Details = r
+                        .BookBorrowingRequestDetails.Select(
+                            d => new BookBorrowingRequestDetailsResponse
+                            {
+                                Id = d.Id,
+                                BookId = d.BookId,
+                                BookName = d.BorrowBook.Name,
+                                BookAuthor = d.BorrowBook.Author,
+                                Status = d.Status,
+                            }
+                        )
+                        .ToList(),
+                })
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var totalCount = await query.CountAsync();
+            return (res, totalCount);
+        }
     }
 }

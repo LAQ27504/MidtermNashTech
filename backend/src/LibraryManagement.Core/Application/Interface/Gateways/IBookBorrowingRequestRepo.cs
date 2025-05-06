@@ -15,6 +15,17 @@ namespace LibraryManagement.Core.Application.Interface.Gateways
             Guid requestorID
         );
 
+        public Task<(ICollection<BorrowResponse>, int)> GetPaginateWithRequestorID(
+            Guid requestorId,
+            int pageNumber,
+            int pageSize
+        );
+
+        public Task<(ICollection<BorrowResponse>, int)> GetPaginateWaitingRequest(
+            int pageNumber,
+            int pageSize
+        );
+
         Task<ICollection<BorrowResponse>> GetAllRequestsWithDetailsAsync();
     }
 }

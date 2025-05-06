@@ -105,6 +105,7 @@ export default function SuperBookBorrowRequestPage() {
         { page: "1", pageSize: currentPageSize },
         { replace: true }
       );
+      window.location.reload();
     } catch (error: any) {
       console.error("Failed to update request status:", error);
       const errorMessage =

@@ -40,6 +40,7 @@ const LoginPage: React.FC = () => {
 
       setIsAuthenticated(true);
       navigate("/home");
+      window.location.reload();
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed");
     } finally {

@@ -162,13 +162,14 @@ namespace LibraryManagement.Core.Application.Service
             if (pageNumber < 1 || pageSize < 1)
                 return OperationResult.Fail("Page number and size must be greater than zero.");
 
-            var (entities, total) = await _requestRepo.GetPagedAsync(pageNumber, pageSize);
-            var filteredEntities = entities.Where(r => r.RequestorId == requestorId).ToList();
-            var totalFiltered = filteredEntities.Count;
-            if (totalFiltered == 0)
-                return OperationResult.Fail("No requests found for the user.");
+            var (entities, total) = await _requestRepo.GetPaginateWithRequestorID(
+                requestorId,
+                pageNumber,
+                pageSize
+            );
+
             var responses = new List<BorrowResponse>();
-            foreach (var ent in filteredEntities)
+            foreach (var ent in entities)
             {
                 var resp = await BuildBorrowResponseAsync(ent.Id);
                 if (resp != null)
@@ -192,15 +193,13 @@ namespace LibraryManagement.Core.Application.Service
             if (pageNumber < 1 || pageSize < 1)
                 return OperationResult.Fail("Page number and size must be greater than zero.");
 
-            var (entities, total) = await _requestRepo.GetPagedAsync(pageNumber, pageSize);
+            var (entities, total) = await _requestRepo.GetPaginateWaitingRequest(
+                pageNumber,
+                pageSize
+            );
 
-            var filteredEntities = entities.Where(r => r.Status == RequestStatus.Waiting).ToList();
-
-            var totalFiltered = filteredEntities.Count;
-            if (totalFiltered == 0)
-                return OperationResult.Ok("No requests found for the user.");
             var responses = new List<BorrowResponse>();
-            foreach (var ent in filteredEntities)
+            foreach (var ent in entities)
             {
                 var resp = await BuildBorrowResponseAsync(ent.Id);
                 if (resp != null)

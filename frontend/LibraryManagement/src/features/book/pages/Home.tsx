@@ -52,9 +52,10 @@ export default function Home() {
         alert(
           `Borrow request created successfully for ${username}! Request ID: ${createdRequest.id}`
         );
+        window.location.reload();
         return;
       }
-
+      window.location.reload();
       const message = response?.data?.message || "Unknown error from API.";
       console.error("Failed to create borrow request:", message);
       alert(`Failed to create borrow request: ${message}`);

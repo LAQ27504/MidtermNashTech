@@ -30,10 +30,12 @@ export default function BooksPage() {
     }
     setIsDialogOpen(false);
     setEditingBook(null);
+    window.location.reload();
   };
 
   const handleDeleteBook = async (id: string) => {
     await DeleteBook(id);
+    window.location.reload();
   };
 
   const openAddDialog = () => {
