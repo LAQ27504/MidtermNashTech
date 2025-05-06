@@ -13,6 +13,20 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowAll",
+        policy =>
+        {
+            policy
+                .AllowAnyOrigin() // Allows requests from any origin
+                .AllowAnyMethod() // Allows any HTTP method (GET, POST, etc.)
+                .AllowAnyHeader(); // Allows any header
+        }
+    );
+});
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
@@ -30,6 +44,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IBookBorrowingRequestService, BookBorrowingRequestService>();
 
 builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<TokenInfoService>();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -69,6 +84,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 

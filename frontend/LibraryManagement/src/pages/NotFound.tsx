@@ -1,30 +1,24 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button"; // Import Shadcn Button
 
 const NotFound: React.FC = () => {
   const navigate = useNavigate();
 
   const handleGoHome = () => {
-    navigate("/");
+    navigate("/home");
   };
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>404 - Page Not Found</h1>
       <p>The page you are looking for does not exist.</p>
-      <button
+      <Button
         onClick={handleGoHome}
-        style={{
-          padding: "10px 20px",
-          fontSize: "16px",
-          cursor: "pointer",
-          backgroundColor: "#007BFF",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-        }}>
+        size="lg" // optional, to adjust the button size
+        style={{ marginTop: "20px" }}>
         Go to Home
-      </button>
+      </Button>
     </div>
   );
 };

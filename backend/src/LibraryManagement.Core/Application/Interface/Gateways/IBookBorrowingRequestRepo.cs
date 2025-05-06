@@ -14,5 +14,7 @@ namespace LibraryManagement.Core.Application.Interface.Gateways
         public Task<ICollection<BorrowResponse>> GetBorrowResponsesByRequestIdAsync(
             Guid requestorID
         );
+
+        Task<ICollection<BorrowResponse>> GetAllRequestsWithDetailsAsync();
     }
 }

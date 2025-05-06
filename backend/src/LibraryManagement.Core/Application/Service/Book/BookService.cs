@@ -94,6 +94,7 @@ namespace LibraryManagement.Core.Application.Service
                 Author = b.Author,
                 Amount = b.Amount,
                 AvailableAmount = b.AvailableAmount,
+                CategoryId = b.CategoryId,
                 CategoryName = categories.FirstOrDefault(c => c.Id == b.CategoryId)!.Name,
             });
 

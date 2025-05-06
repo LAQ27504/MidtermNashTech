@@ -10,6 +10,8 @@ namespace LibraryManagement.Core.Application.DTOs.Responses
 
         public string CategoryName { get; set; }
 
+        public Guid CategoryId { get; set; }
+
         public int Amount { get; set; }
 
         public int AvailableAmount { get; set; }

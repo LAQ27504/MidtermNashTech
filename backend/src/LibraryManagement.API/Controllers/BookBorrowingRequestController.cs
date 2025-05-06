@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagement.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class BookBorrowingRequestController : ControllerBase
     {
@@ -24,6 +24,16 @@ namespace LibraryManagement.API.Controllers
         public async Task<IActionResult> CreateBorrowRequest([FromBody] BorrowRequest request)
         {
             var res = await _service.CreateBorrowRequestAsync(request);
+            if (!res.Success)
+                return BadRequest(res.Message);
+            return Ok(new { res.Data, res.Message });
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAllBorrowRequests()
+        {
+            var res = await _service.GetAllRequestsAsync();
             if (!res.Success)
                 return BadRequest(res.Message);
             return Ok(new { res.Data, res.Message });
@@ -63,13 +73,44 @@ namespace LibraryManagement.API.Controllers
         [Authorize(Roles = nameof(UserType.SuperUser))]
         public async Task<IActionResult> SetApproval([FromBody] ApprovalRequest request)
         {
-            var res = await _service.SetApprovalAsync(
-                request.RequestId,
-                request.ApproverId,
-                request.IsApproved
-            );
+            var res = await _service.SetApprovalAsync(request.RequestId, request.IsApproved);
             if (!res.Success)
                 return BadRequest(res.Message);
+            return Ok(new { res.Data, res.Message });
+        }
+
+        [HttpGet("{pageNumber:int}/{pageSize:int}/{requestorId:guid}")]
+        [Authorize]
+        public async Task<IActionResult> GetBookPaginationUserId(
+            int pageNumber,
+            int pageSize,
+            Guid requestorId
+        )
+        {
+            var res = await _service.GetRequestWithPaginationUserIdAsync(
+                pageNumber,
+                pageSize,
+                requestorId
+            );
+            if (!res.Success)
+            {
+                return BadRequest(res.Message);
+            }
+            return Ok(new { res.Data, res.Message });
+        }
+
+        [HttpGet("waiting/{pageNumber:int}/{pageSize:int}")]
+        [Authorize(Roles = nameof(UserType.SuperUser))]
+        public async Task<IActionResult> GetRequestWithPaginationWaiting(
+            int pageNumber,
+            int pageSize
+        )
+        {
+            var res = await _service.GetRequestWithPaginationWaitingAsync(pageNumber, pageSize);
+            if (!res.Success)
+            {
+                return BadRequest(res.Message);
+            }
             return Ok(new { res.Data, res.Message });
         }
     }

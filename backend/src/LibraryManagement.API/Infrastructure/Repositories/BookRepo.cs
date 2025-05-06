@@ -33,6 +33,7 @@ namespace LibraryManagement.Core.Infrastructure.Repositories
                     Name = b.Name,
                     Author = b.Author,
                     Amount = b.Amount,
+                    CategoryId = b.CategoryId,
                     CategoryName = b.BookCategory.Name,
                 })
                 .FirstOrDefaultAsync();
@@ -57,6 +58,7 @@ namespace LibraryManagement.Core.Infrastructure.Repositories
                     Author = b.Author,
                     Amount = b.Amount,
                     CategoryName = b.BookCategory.Name,
+                    CategoryId = b.CategoryId,
                     AvailableAmount = b.AvailableAmount,
                 })
                 .ToListAsync();

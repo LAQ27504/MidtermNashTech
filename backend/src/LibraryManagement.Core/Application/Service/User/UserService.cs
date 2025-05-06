@@ -99,6 +99,7 @@ namespace LibraryManagement.Core.Application.Service
             }
 
             var token = _jwtService.GenerateToken(user.Id, user.Name, user.Type);
+
             return OperationResult.Ok(token, "Login successful");
         }
     }

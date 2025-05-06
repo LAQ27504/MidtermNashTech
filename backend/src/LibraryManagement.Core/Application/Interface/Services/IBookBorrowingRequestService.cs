@@ -8,6 +8,14 @@ namespace LibraryManagement.Core.Application.Interface.Services
         Task<OperationResult> GetBorrowRequestByIdAsync(Guid requestId);
         Task<OperationResult> GetRequestsByUserAsync(Guid requestorId);
         Task<OperationResult> ReturnBooksAsync(ReturnRequest request);
-        Task<OperationResult> SetApprovalAsync(Guid requestId, Guid approverId, bool isApproved);
+        Task<OperationResult> SetApprovalAsync(Guid requestId, bool isApproved);
+        Task<OperationResult> GetAllRequestsAsync();
+        Task<OperationResult> GetRequestWithPaginationUserIdAsync(
+            int pageNumber,
+            int pageSize,
+            Guid requestorId
+        );
+
+        Task<OperationResult> GetRequestWithPaginationWaitingAsync(int pageNumber, int pageSize);
     }
 }

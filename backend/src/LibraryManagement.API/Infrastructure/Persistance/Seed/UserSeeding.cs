@@ -23,6 +23,34 @@ namespace LibraryManagement.API.Infrastructure.Persistence.Seed
                     HashedPassword = "password1",
                     Type = UserType.NormalUser,
                 },
+                new User
+                {
+                    Id = Guid.Parse("77777777-7777-7777-7777-777777777777"),
+                    Name = "supervisor",
+                    HashedPassword = "supervisor123",
+                    Type = UserType.SuperUser,
+                },
+                new User
+                {
+                    Id = Guid.Parse("88888888-8888-8888-8888-888888888888"),
+                    Name = "user2",
+                    HashedPassword = "password2",
+                    Type = UserType.NormalUser,
+                },
+                new User
+                {
+                    Id = Guid.Parse("99999999-9999-9999-9999-999999999999"),
+                    Name = "user3",
+                    HashedPassword = "password3",
+                    Type = UserType.NormalUser,
+                },
+                new User
+                {
+                    Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    Name = "manager",
+                    HashedPassword = "manager123",
+                    Type = UserType.SuperUser,
+                },
             };
 
             foreach (var user in users)

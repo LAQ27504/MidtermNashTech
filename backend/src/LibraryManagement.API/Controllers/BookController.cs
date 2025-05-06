@@ -7,7 +7,7 @@ using Microsoft.OpenApi.Expressions;
 
 namespace LibraryManagement.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class BookController : ControllerBase
     {

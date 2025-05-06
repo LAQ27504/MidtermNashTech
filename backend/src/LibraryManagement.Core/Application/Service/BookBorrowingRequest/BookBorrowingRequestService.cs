@@ -19,23 +19,32 @@ namespace LibraryManagement.Core.Application.Service
         private readonly IBookBorrowingRequestDetailsRepo _detailsRepo;
         private readonly IBookService _bookService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly TokenInfoService _tokenInfoService;
 
         public BookBorrowingRequestService(
             IBookBorrowingRequestRepo requestRepo,
             IBookBorrowingRequestDetailsRepo detailsRepo,
             IBookService bookService,
-            IUserRepo userRepo,
-            IUnitOfWork unitOfWork
+            IUnitOfWork unitOfWork,
+            TokenInfoService tokenInfoService
         )
         {
             _requestRepo = requestRepo;
             _detailsRepo = detailsRepo;
             _bookService = bookService;
             _unitOfWork = unitOfWork;
+            _tokenInfoService = tokenInfoService;
         }
 
         public async Task<OperationResult> CreateBorrowRequestAsync(BorrowRequest request)
         {
+            var (userId, userName, userRole) = _tokenInfoService.GetTokenInfo();
+
+            if (request.RequestorID != userId)
+            {
+                return OperationResult.Fail("Requestor ID does not match the logged-in user.");
+            }
+
             if (request.BookIds == null || !request.BookIds.Any())
                 return OperationResult.Fail("No books specified for borrowing.");
 
@@ -80,7 +89,7 @@ namespace LibraryManagement.Core.Application.Service
                             Id = Guid.NewGuid(),
                             BookId = bookId,
                             RequestId = header.Id,
-                            Status = BorrowBookStatus.Borrowed,
+                            Status = BorrowBookStatus.Waiting,
                         }
                     );
                 }
@@ -92,13 +101,27 @@ namespace LibraryManagement.Core.Application.Service
 
                 // prepare response
                 var response = await BuildBorrowResponseAsync(header.Id);
-                return OperationResult.Ok(response, "Borrow request created.");
+                return OperationResult.Ok(response!, "Borrow request created.");
             }
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackAsync();
                 return OperationResult.Fail($"Failed to create borrow request: {ex.Message}");
             }
+        }
+
+        public async Task<OperationResult> GetAllRequestsAsync()
+        {
+            var entities = await _requestRepo.GetAllRequestsWithDetailsAsync();
+            var responses = new List<BorrowResponse>();
+            foreach (var ent in entities)
+            {
+                var resp = await BuildBorrowResponseAsync(ent.Id);
+                if (resp != null)
+                    responses.Add(resp);
+            }
+
+            return OperationResult.Ok(responses, "All requests retrieved.");
         }
 
         public async Task<OperationResult> GetBorrowRequestByIdAsync(Guid requestId)
@@ -130,14 +153,80 @@ namespace LibraryManagement.Core.Application.Service
             return response;
         }
 
+        public async Task<OperationResult> GetRequestWithPaginationUserIdAsync(
+            int pageNumber,
+            int pageSize,
+            Guid requestorId
+        )
+        {
+            if (pageNumber < 1 || pageSize < 1)
+                return OperationResult.Fail("Page number and size must be greater than zero.");
+
+            var (entities, total) = await _requestRepo.GetPagedAsync(pageNumber, pageSize);
+            var filteredEntities = entities.Where(r => r.RequestorId == requestorId).ToList();
+            var totalFiltered = filteredEntities.Count;
+            if (totalFiltered == 0)
+                return OperationResult.Fail("No requests found for the user.");
+            var responses = new List<BorrowResponse>();
+            foreach (var ent in filteredEntities)
+            {
+                var resp = await BuildBorrowResponseAsync(ent.Id);
+                if (resp != null)
+                    responses.Add(resp);
+            }
+            var pagedResponse = new PaginationResponse<BorrowResponse>
+            {
+                Items = responses,
+                TotalCount = total,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+            };
+            return OperationResult.Ok(pagedResponse, "Requests retrieved with pagination.");
+        }
+
+        public async Task<OperationResult> GetRequestWithPaginationWaitingAsync(
+            int pageNumber,
+            int pageSize
+        )
+        {
+            if (pageNumber < 1 || pageSize < 1)
+                return OperationResult.Fail("Page number and size must be greater than zero.");
+
+            var (entities, total) = await _requestRepo.GetPagedAsync(pageNumber, pageSize);
+
+            var filteredEntities = entities.Where(r => r.Status == RequestStatus.Waiting).ToList();
+
+            var totalFiltered = filteredEntities.Count;
+            if (totalFiltered == 0)
+                return OperationResult.Ok("No requests found for the user.");
+            var responses = new List<BorrowResponse>();
+            foreach (var ent in filteredEntities)
+            {
+                var resp = await BuildBorrowResponseAsync(ent.Id);
+                if (resp != null)
+                    responses.Add(resp);
+            }
+            var pagedResponse = new PaginationResponse<BorrowResponse>
+            {
+                Items = responses,
+                TotalCount = total,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+            };
+            return OperationResult.Ok(pagedResponse, "Requests retrieved with pagination.");
+        }
+
         public async Task<OperationResult> ReturnBooksAsync(ReturnRequest request)
         {
-            // 1) Fetch request with details
+            var (userId, userName, userRole) = _tokenInfoService.GetTokenInfo();
+
             var header = await _requestRepo.GetByIdAsync(request.RequestId);
             if (header == null)
                 return OperationResult.Fail("Borrow request not found.");
 
-            // 2) Filter the details that match the return list
+            if (header.RequestorId != userId)
+                return OperationResult.Fail("Requestor ID does not match the logged-in user.");
+
             var returnDetails = header
                 .BookBorrowingRequestDetails.Where(d => request.BookIds.Contains(d.BookId))
                 .ToList();
@@ -151,7 +240,7 @@ namespace LibraryManagement.Core.Application.Service
                 // 3) Process each return
                 foreach (var detail in returnDetails)
                 {
-                    if (detail.Status != BorrowBookStatus.Borrowed)
+                    if (detail.Status != BorrowBookStatus.Approved)
                         continue; // or fail if you want strictness
 
                     // mark as returned
@@ -177,25 +266,35 @@ namespace LibraryManagement.Core.Application.Service
         }
 
         // In BookBorrowingRequestService
-        public async Task<OperationResult> SetApprovalAsync(
-            Guid requestId,
-            Guid approverId,
-            bool isApproved
-        )
+        public async Task<OperationResult> SetApprovalAsync(Guid requestId, bool isApproved)
         {
-            var header = await _requestRepo.GetByIdAsync(requestId);
-            if (header == null)
+            var (userId, userName, userRole) = _tokenInfoService.GetTokenInfo();
+            var requestApprove = await _requestRepo.GetByIdAsync(requestId);
+            if (requestApprove == null)
                 return OperationResult.Fail("Request not found.");
 
-            if (header.Status != RequestStatus.Waiting)
+            if (requestApprove.Status != RequestStatus.Waiting)
                 return OperationResult.Fail("Only waiting requests can be processed.");
+            if (requestApprove.ApproverId != null)
+                return OperationResult.Fail("Request already processed.");
+            // Check if the approver is a librarian
+            if (userRole != nameof(UserType.SuperUser))
+                return OperationResult.Fail("Only Super User can approve requests.");
 
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                header.ApproverId = approverId;
-                header.Status = isApproved ? RequestStatus.Approved : RequestStatus.Rejected;
-                _requestRepo.Update(header);
+                requestApprove.ApproverId = userId;
+                requestApprove.Status = isApproved
+                    ? RequestStatus.Approved
+                    : RequestStatus.Rejected;
+
+                await _detailsRepo.UpdateRequestDetailStatusAsync(
+                    requestId,
+                    isApproved ? BorrowBookStatus.Approved : BorrowBookStatus.Rejected
+                );
+
+                _requestRepo.Update(requestApprove);
 
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();
