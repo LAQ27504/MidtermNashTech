@@ -293,6 +293,14 @@ namespace LibraryManagement.Core.Application.Service
                     requestId,
                     isApproved ? BorrowBookStatus.Approved : BorrowBookStatus.Rejected
                 );
+                var rejectBooks = requestApprove
+                    .BookBorrowingRequestDetails.Where(d => d.Status == BorrowBookStatus.Approved)
+                    .Select(d => d.BookId)
+                    .ToList();
+                foreach (var bookId in rejectBooks)
+                {
+                    await _bookService.IncreaseAvailableAmount(bookId, 1);
+                }
 
                 _requestRepo.Update(requestApprove);
 
