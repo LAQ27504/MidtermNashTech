@@ -294,7 +294,7 @@ namespace LibraryManagement.Core.Application.Service
                     isApproved ? BorrowBookStatus.Approved : BorrowBookStatus.Rejected
                 );
                 var rejectBooks = requestApprove
-                    .BookBorrowingRequestDetails.Where(d => d.Status == BorrowBookStatus.Approved)
+                    .BookBorrowingRequestDetails.Where(d => d.Status == BorrowBookStatus.Rejected)
                     .Select(d => d.BookId)
                     .ToList();
                 foreach (var bookId in rejectBooks)
