@@ -4,8 +4,8 @@ export interface BorrowRequest {
 }
 
 export interface ReturnRequest {
-  id: string;
-  bookId: string[];
+  requestId: string;
+  bookIds: string[];
 }
 
 export interface ApprovalRequest {
@@ -44,6 +44,5 @@ export enum BorrowBookStatus {
   Waiting = 0,
   Approved = 1,
   Rejected = 2,
-  Borrowed = 3,
-  Returned = 4,
+  Returned = 3,
 }

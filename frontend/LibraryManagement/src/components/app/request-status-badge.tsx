@@ -66,12 +66,9 @@ export const BorrowBookStatusBadge: React.FC<BorrowBookStatusBadgeProps> = ({
       text = "Rejected";
       variant = "destructive"; // Red
       break;
-    case BorrowBookStatus.Borrowed: // Book is currently borrowed
-      text = "Borrowed";
-      variant = "default"; // Blue or primary color
-      break;
     case BorrowBookStatus.Returned: // Book has been returned
-      text = "secondary"; // Grey or a less prominent color
+      text = "Returned";
+      variant = "default"; // Grey or a less prominent color
       break;
     default:
       text = `Unknown (${status})`;

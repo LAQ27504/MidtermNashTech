@@ -53,9 +53,6 @@ export default function CategoriesPage() {
         await DeleteCategory(id);
         // Add success toast/notification if available
         setRefreshKey((prev) => prev + 1); // Trigger a data refresh
-        // If the deleted item was the only one on the current page,
-        // and it's not the first page, you might want to navigate to the previous page.
-        // This logic can be complex and depends on how BookTableFooter handles page state.
       } catch (error) {
         console.error("Failed to delete category:", error);
         // Add error toast/notification if available

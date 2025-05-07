@@ -226,9 +226,9 @@ namespace LibraryManagement.Core.Application.Service
             if (header.RequestorId != userId)
                 return OperationResult.Fail("Requestor ID does not match the logged-in user.");
 
-            var returnDetails = header
-                .BookBorrowingRequestDetails.Where(d => request.BookIds.Contains(d.BookId))
-                .ToList();
+            var returnDetails = await _detailsRepo.GetRequestDetailByRequestId(header.Id);
+
+            returnDetails = returnDetails.Where(d => request.BookIds.Contains(d.BookId)).ToList();
 
             if (!returnDetails.Any())
                 return OperationResult.Fail("No matching borrowed books found to return.");

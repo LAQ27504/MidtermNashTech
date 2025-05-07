@@ -98,7 +98,7 @@ export default function NormalBookRequestPage() {
     }
 
     const borrowedBookIds = request.details
-      .filter((detail) => detail.status === BorrowBookStatus.Borrowed)
+      .filter((detail) => detail.status === BorrowBookStatus.Approved)
       .map((detail) => detail.bookId);
 
     if (borrowedBookIds.length === 0) {
@@ -109,10 +109,11 @@ export default function NormalBookRequestPage() {
     }
 
     const returnPayload: ReturnRequest = {
-      // Your ReturnRequest DTO uses 'id' for the requestId and 'bookId' for the array of book IDs
-      id: request.id, // This is the BookBorrowingRequestId
-      bookId: borrowedBookIds, // Array of specific Book IDs to be returned
+      requestId: request.id, // This is the BookBorrowingRequestId
+      bookIds: borrowedBookIds, // Array of specific Book IDs to be returned
     };
+
+    console.log("Return payload:", returnPayload);
 
     if (
       !window.confirm(
@@ -207,8 +208,9 @@ export default function NormalBookRequestPage() {
               const canReturn =
                 request.status === RequestStatus.Approved &&
                 request.details.some(
-                  (detail) => detail.status === BorrowBookStatus.Borrowed
+                  (detail) => detail.status === BorrowBookStatus.Approved
                 );
+              console.log(canReturn);
               return (
                 <Fragment key={request.id}>
                   <TableRow className="hover:bg-muted/50">
